@@ -18,8 +18,8 @@ import { MutationUpdaterFn } from 'apollo-client/core/watchQueryOptions';
 
 import { ExecutionResult, DocumentNode } from 'graphql';
 
-export interface MutationOpts<TVariables = OperationVariables> {
-  variables?: TVariables;
+export interface MutationOpts {
+  variables?: Object;
   optimisticResponse?: Object;
   updateQueries?: MutationQueryReducersMap;
   refetchQueries?: string[] | PureQueryOptions[];
@@ -28,9 +28,9 @@ export interface MutationOpts<TVariables = OperationVariables> {
   notifyOnNetworkStatusChange?: boolean;
 }
 
-export interface QueryOpts<TVariables = OperationVariables> {
+export interface QueryOpts {
   ssr?: boolean;
-  variables?: TVariables;
+  variables?: { [key: string]: any };
   fetchPolicy?: FetchPolicy;
   pollInterval?: number;
   client?: ApolloClient;
@@ -39,15 +39,17 @@ export interface QueryOpts<TVariables = OperationVariables> {
   skip?: boolean;
 }
 
-export interface QueryProps<TVariables = OperationVariables> {
+export interface QueryProps {
   error?: ApolloError;
   networkStatus: number;
   loading: boolean;
-  variables: TVariables;
+  variables: {
+    [variable: string]: any;
+  };
   fetchMore: (
     fetchMoreOptions: FetchMoreQueryOptions & FetchMoreOptions,
   ) => Promise<ApolloQueryResult<any>>;
-  refetch: (variables?: TVariables) => Promise<ApolloQueryResult<any>>;
+  refetch: (variables?: any) => Promise<ApolloQueryResult<any>>;
   startPolling: (pollInterval: number) => void;
   stopPolling: () => void;
   subscribeToMore: (options: SubscribeToMoreOptions) => () => void;
@@ -56,8 +58,8 @@ export interface QueryProps<TVariables = OperationVariables> {
   ) => void;
 }
 
-export type MutationFunc<TResult, TVariables = OperationVariables> = (
-  opts: MutationOpts<TVariables>,
+export type MutationFunc<TResult> = (
+  opts: MutationOpts,
 ) => Promise<ApolloQueryResult<TResult>>;
 
 export interface OptionProps<TProps, TResult> {
@@ -73,10 +75,6 @@ export type ChildProps<P, R> = P & {
 
 export type NamedProps<P, R> = P & {
   ownProps: R;
-};
-
-export type OperationVariables = {
-  [key: string]: any;
 };
 
 export interface OperationOption<TProps, TResult> {
